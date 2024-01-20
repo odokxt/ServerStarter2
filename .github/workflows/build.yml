@@ -3,6 +3,7 @@ name: Build
 # secrets.GITHUB_TOKENにリポジトリへの書き込みを許可
 permissions:
   contents: write
+  pull-requests: write
 
 # 同時起動とキャンセルを不可に
 concurrency:
