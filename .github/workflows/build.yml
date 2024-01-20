@@ -53,6 +53,8 @@ jobs:
       - name: Create release pr
         run: |
           gh pr create -B main -t "🔖 Release ${{ steps.get_version.outputs.next-version }}" -b "🔖 Release ${{ steps.get_version.outputs.next-version }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     outputs:
       current-version: ${{steps.get_version.outputs.current-version }}
