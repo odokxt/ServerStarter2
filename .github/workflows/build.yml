@@ -60,7 +60,7 @@ jobs:
           commit-message: 🔖 Release ${{ steps.get_version.outputs.next-version }}
           title: 🔖 Release ${{ steps.get_version.outputs.next-version }}
           body: 🔖 Release ${{ steps.get_version.outputs.next-version }}
-          committer: github-actions[bot]
+          committer: 41898282+github-actions[bot]@users.noreply.github.com
           branch: release/v${{ steps.get_version.outputs.next-version }}
           base: main
 
