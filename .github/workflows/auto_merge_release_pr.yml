@@ -1,4 +1,4 @@
-name: Steward Auto Merge
+name: Auto Merge Release PR
 on:
   pull_request:
     branches:
