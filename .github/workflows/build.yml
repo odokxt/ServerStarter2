@@ -66,10 +66,10 @@ jobs:
           base: main
         
       - name: Approve PR
-        run: gh pr review "${{github.event.pull_request.html_url}}" --approve
+        run: gh pr review "${{ steps.pullrequest.outputs.pull-request-url }}" --approve
 
       - name: Enable auto-merge for Steward PRs
-        run: gh pr merge --merge --auto "${{github.event.pull_request.html_url}}"
+        run: gh pr merge --merge --auto "${{ steps.pullrequest.outputs.pull-request-url }}"
 
     outputs:
       current-version: ${{steps.get_version.outputs.current-version }}
