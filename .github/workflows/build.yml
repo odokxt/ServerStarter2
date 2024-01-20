@@ -31,17 +31,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # リリース用ブランチを作成
-      - run: |
-          git config --local user.name github-actions[bot]
-          git config --local user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git checkout -b release/v${{ steps.get_version.outputs.next-version }}
-
       # package.jsonのversionを更新
       - uses: Server-Starter-for-Minecraft/VersionUpdater@v1
         id: get_version
         with:
           update-type: ${{inputs.type}}
+
+      # リリース用ブランチを作成
+      - run: |
+          git config --local user.name github-actions[bot]
+          git config --local user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout -b release/v${{ steps.get_version.outputs.next-version }}
 
       # gitにcommitしてpush
       - run: |
