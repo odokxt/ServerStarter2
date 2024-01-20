@@ -31,6 +31,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      # リリース用ブランチを作成
+      - run: |
+          git config --local user.name github-actions[bot]
+          git config --local user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout -b release/v${{ steps.get_version.outputs.next-version }}
+
       # package.jsonのversionを更新
       - uses: Server-Starter-for-Minecraft/VersionUpdater@v1
         id: get_version
@@ -39,16 +45,19 @@ jobs:
 
       # gitにcommitしてpush
       - run: |
-          git config --local user.name github-actions[bot]
-          git config --local user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add .
           git commit -m "🔖 Release ${{ steps.get_version.outputs.next-version }}"
-          git push
-          git checkout -b release/v${{ steps.get_version.outputs.next-version }}
           git push -u origin release/v${{ steps.get_version.outputs.next-version }}
+
+      # mainに対してpullRequestを作成
+      - name: Create release pr
+        run: |
+          gh pr create -B main -t "🔖 Release ${{ steps.get_version.outputs.next-version }}" -b "🔖 Release ${{ steps.get_version.outputs.next-version }}"
+
     outputs:
       current-version: ${{steps.get_version.outputs.current-version }}
       next-version: ${{steps.get_version.outputs.next-version }}
+      brench-name: release/v${{ steps.get_version.outputs.next-version }}
 
   # 各osでelectronをビルド
   build-electron:
@@ -67,6 +76,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      # releaseブランチをチェックアウト
+      - run: |
+          git fetch origin ${{ needs.create-commit.outputs.brench-name }}
+          git checkout ${{ needs.create-commit.outputs.brench-name }}
 
       # Nodejsを使用
       - name: Setup NodeJS Environment 18
@@ -122,6 +136,7 @@ jobs:
           tag: v${{ needs.create-commit.outputs.next-version }}
           name: ${{ github.event.pull_request.title }}
           version: v${{ needs.create-commit.outputs.next-version }}
+          commitish: ${{ needs.create-commit.outputs.brench-name }}
           publish: false # draft状態で作成
           prerelease: false
 
