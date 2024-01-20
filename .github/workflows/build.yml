@@ -29,6 +29,9 @@ jobs:
   create-commit:
     runs-on: ubuntu-latest
 
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - uses: actions/checkout@v2
 
@@ -38,24 +41,35 @@ jobs:
         with:
           update-type: ${{inputs.type}}
 
+      # gitにcommitしてpush
       # リリース用ブランチを作成
       - run: |
           git config --local user.name github-actions[bot]
           git config --local user.email 41898282+github-actions[bot]@users.noreply.github.com
           git checkout -b release/v${{ steps.get_version.outputs.next-version }}
-
-      # gitにcommitしてpush
-      - run: |
           git add .
           git commit -m "🔖 Release ${{ steps.get_version.outputs.next-version }}"
           git push -u origin release/v${{ steps.get_version.outputs.next-version }}
 
       # mainに対してpullRequestを作成
-      - name: Create release pr
-        run: |
-          gh pr create -B main -t "🔖 Release ${{ steps.get_version.outputs.next-version }}" -b "🔖 Release ${{ steps.get_version.outputs.next-version }}"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Pull Request
+        id: pullrequest 
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 🔖 Release ${{ steps.get_version.outputs.next-version }}
+          title: 🔖 Release ${{ steps.get_version.outputs.next-version }}
+          body: 🔖 Release ${{ steps.get_version.outputs.next-version }}
+          comitter: github-actions[bot]
+          branch: release/v${{ steps.get_version.outputs.next-version }}
+          base: main
+        
+      - name: Approve PR
+        run: gh pr review "${{github.event.pull_request.html_url}}" --approve
+
+      - name: Enable auto-merge for Steward PRs
+        run: gh pr merge --merge --auto "${{github.event.pull_request.html_url}}"
 
     outputs:
       current-version: ${{steps.get_version.outputs.current-version }}
