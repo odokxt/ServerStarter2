@@ -7,7 +7,6 @@ permissions:
 
 # 同時起動とキャンセルを不可に
 concurrency:
-  group: 'build'
   cancel-in-progress: false
 
 # github上の操作で起動
