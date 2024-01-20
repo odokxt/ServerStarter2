@@ -52,7 +52,6 @@ jobs:
           git push -u origin release/v${{ steps.get_version.outputs.next-version }}
 
       # mainに対してpullRequestを作成
-
       - name: Create Pull Request
         id: pullrequest 
         uses: peter-evans/create-pull-request@v5
@@ -61,10 +60,15 @@ jobs:
           commit-message: 🔖 Release ${{ steps.get_version.outputs.next-version }}
           title: 🔖 Release ${{ steps.get_version.outputs.next-version }}
           body: 🔖 Release ${{ steps.get_version.outputs.next-version }}
-          comitter: github-actions[bot]
+          committer: github-actions[bot]
           branch: release/v${{ steps.get_version.outputs.next-version }}
           base: main
-        
+
+      - name: Check outputs
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+A
       - name: Approve PR
         run: gh pr review "${{ steps.pullrequest.outputs.pull-request-url }}" --approve
 
