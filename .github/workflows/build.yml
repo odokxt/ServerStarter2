@@ -69,6 +69,8 @@ jobs:
         run: gh pr review "${{ steps.pullrequest.outputs.pull-request-url }}" --approve
 
       - name: Enable auto-merge for Steward PRs
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTION_ACCESS_TOKEN }}
         run: gh pr merge --merge --auto "${{ steps.pullrequest.outputs.pull-request-url }}"
 
     outputs:
