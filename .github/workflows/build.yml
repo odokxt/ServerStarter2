@@ -66,8 +66,8 @@ jobs:
 
       - name: Check outputs
         run: |
-          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
-          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+          echo "Pull Request Number - ${{ steps.pullrequest.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.pullrequest.outputs.pull-request-url }}"
 
       - name: Approve PR
         run: gh pr review "${{ steps.pullrequest.outputs.pull-request-url }}" --approve
