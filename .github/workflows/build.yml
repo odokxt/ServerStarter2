@@ -46,10 +46,8 @@ jobs:
       - run: |
           git config --local user.name github-actions[bot]
           git config --local user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git checkout -b release/v${{ steps.get_version.outputs.next-version }}
           git add .
           git commit -m "🔖 Release ${{ steps.get_version.outputs.next-version }}"
-          git push -u origin release/v${{ steps.get_version.outputs.next-version }}
 
       # mainに対してpullRequestを作成
       - name: Create Pull Request
