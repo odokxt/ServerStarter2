@@ -77,13 +77,13 @@ jobs:
         if: steps.pullrequest.outputs.pull-request-operation == 'created'
         env:
           GITHUB_TOKEN: ${{ secrets.ACTION_ACCESS_TOKEN }}
-        run: gh pr checks
+        run: gh pr checks ${{ steps.pullrequest.outputs.pull-request-number }}
 
       - name: Approve PR
         if: steps.pullrequest.outputs.pull-request-operation == 'created'
         env:
           GITHUB_TOKEN: ${{ secrets.ACTION_ACCESS_TOKEN }}
-        run: gh pr review "$PR_URL" --approve
+        run: gh pr review "${{ steps.pullrequest.outputs.pull-request-number }}" --approve
 
       - name: Enable Pull Request Automerge
         if: steps.pullrequest.outputs.pull-request-operation == 'created'
