@@ -70,15 +70,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACTION_ACCESS_TOKEN }}
         run: gh pr review "${{ steps.pullrequest.outputs.pull-request-number }}" --approve
 
-      # pullRequestに自動マージを許可
-      - name: Enable Pull Request Automerge
-        if: steps.pullrequest.outputs.pull-request-operation == 'created'
-        uses: peter-evans/enable-pull-request-automerge@v3
-        with:
-          token: ${{ secrets.ACTION_ACCESS_TOKEN }}
-          pull-request-number: ${{ steps.pullrequest.outputs.pull-request-number }}
-          merge-method: squash
-
     outputs:
       current-version: ${{steps.get_version.outputs.current-version }}
       next-version: ${{steps.get_version.outputs.next-version }}
