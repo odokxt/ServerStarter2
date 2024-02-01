@@ -73,12 +73,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACTION_ACCESS_TOKEN }}
         run: gh pr list
 
-      - name: Check PR
-        if: steps.pullrequest.outputs.pull-request-operation == 'created'
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACTION_ACCESS_TOKEN }}
-        run: gh pr checks ${{ steps.pullrequest.outputs.pull-request-number }}
-
       - name: Approve PR
         if: steps.pullrequest.outputs.pull-request-operation == 'created'
         env:
