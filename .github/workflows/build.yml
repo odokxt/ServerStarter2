@@ -67,6 +67,12 @@ jobs:
           echo "Pull Request Number - ${{ steps.pullrequest.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.pullrequest.outputs.pull-request-url }}"
 
+      - name: Approve PR
+        if: steps.pullrequest.outputs.pull-request-operation == 'created'
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTION_ACCESS_TOKEN }}
+        run: gh pr review "$PR_URL" --approve
+
       - name: Enable Pull Request Automerge
         if: steps.pullrequest.outputs.pull-request-operation == 'created'
         uses: peter-evans/enable-pull-request-automerge@v3
