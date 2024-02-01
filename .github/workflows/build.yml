@@ -60,6 +60,7 @@ jobs:
           body: 🔖 Release ${{ steps.get_version.outputs.next-version }}
           branch: "release/v${{ steps.get_version.outputs.next-version }}"
           base: main
+          labels: release
           committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
 
       # pullRequestを承認
