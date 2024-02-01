@@ -58,6 +58,8 @@ jobs:
           commit-message: 🔖 Release ${{ steps.get_version.outputs.next-version }}
           title: 🔖 Release ${{ steps.get_version.outputs.next-version }}
           body: 🔖 Release ${{ steps.get_version.outputs.next-version }}
+          branch: "release/v${{ steps.get_version.outputs.next-version }}"
+          base: main
           committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
 
       - name: Check outputs
@@ -65,13 +67,13 @@ jobs:
           echo "Pull Request Number - ${{ steps.pullrequest.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.pullrequest.outputs.pull-request-url }}"
 
-      - name: Approve PR
-        run: gh pr review "${{ steps.pullrequest.outputs.pull-request-url }}" --approve
-
-      - name: Enable auto-merge for Steward PRs
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACTION_ACCESS_TOKEN }}
-        run: gh pr merge --merge --auto "${{ steps.pullrequest.outputs.pull-request-url }}"
+      - name: Enable Pull Request Automerge
+        if: steps.pullrequest.outputs.pull-request-operation == 'created'
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.ACTION_ACCESS_TOKEN }}
+          pull-request-number: ${{ steps.pullrequest.outputs.pull-request-number }}
+          merge-method: squash
 
     outputs:
       current-version: ${{steps.get_version.outputs.current-version }}
@@ -158,6 +160,17 @@ jobs:
           commitish: ${{ needs.create-commit.outputs.brench-name }}
           publish: false # draft状態で作成
           prerelease: false
+
+      - name: Approve PR
+        env:
+            PR_URL: ${{github.event.pull_request.html_url}}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            run: gh pr review "$PR_URL" --approve
+      - name: Enable auto-merge for Steward PRs
+        env:
+            PR_URL: ${{github.event.pull_request.html_url}}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge --merge --auto "$PR_URL"
 
   # ビルドデータをアップロード
   upload-build:
