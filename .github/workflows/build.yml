@@ -161,17 +161,6 @@ jobs:
           publish: false # draft状態で作成
           prerelease: false
 
-      - name: Approve PR
-        env:
-            PR_URL: ${{github.event.pull_request.html_url}}
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            run: gh pr review "$PR_URL" --approve
-      - name: Enable auto-merge for Steward PRs
-        env:
-            PR_URL: ${{github.event.pull_request.html_url}}
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr merge --merge --auto "$PR_URL"
-
   # ビルドデータをアップロード
   upload-build:
     needs:
