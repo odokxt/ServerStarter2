@@ -77,7 +77,7 @@ jobs:
         with:
           token: ${{ secrets.ACTION_ACCESS_TOKEN }}
           pull-request-number: ${{ steps.pullrequest.outputs.pull-request-number }}
-          merge-method: squash
+          merge-method: merge
 
     outputs:
       current-version: ${{steps.get_version.outputs.current-version }}
