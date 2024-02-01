@@ -67,6 +67,18 @@ jobs:
           echo "Pull Request Number - ${{ steps.pullrequest.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.pullrequest.outputs.pull-request-url }}"
 
+      - name: List PR
+        if: steps.pullrequest.outputs.pull-request-operation == 'created'
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTION_ACCESS_TOKEN }}
+        run: gh pr list
+
+      - name: Check PR
+        if: steps.pullrequest.outputs.pull-request-operation == 'created'
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTION_ACCESS_TOKEN }}
+        run: gh pr checks
+
       - name: Approve PR
         if: steps.pullrequest.outputs.pull-request-operation == 'created'
         env:
