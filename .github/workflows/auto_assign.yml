@@ -12,6 +12,14 @@ jobs:
   auto-assign:
     runs-on: ubuntu-latest
     steps:
+      - name: Check if organization member
+        id: is_organization_member
+        uses: JamesSingleton/is-organization-member@1.0.0
+        with:
+          organization: Server-Starter-for-Minecraft
+          username: ${{ github.event.pull_request.user.login }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: 'Auto-assign PR'
         uses: pozil/auto-assign-issue@v1
         with:
